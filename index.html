@@ -230,12 +230,33 @@
   }
   .cycles-row label{ font-size: 0.85rem; color: var(--ink-dim); }
 
-  .controls{ display:flex; gap: 10px; margin-top: 22px; }
+  .controls{ display:flex; gap: 10px; margin-top: 26px; }
   button.main-btn{
     flex:1; padding: 12px; border-radius: 10px; border: none;
     font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
     cursor:pointer; font-family: inherit;
   }
+  button.save-btn{
+    display:flex; align-items:center; justify-content:center; gap: 10px;
+    padding: 18px;
+    background: var(--gold);
+    color: var(--bg-soft);
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 6px 22px rgba(201, 166, 107, 0.5);
+    transition: transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  button.save-btn svg{ width: 20px; height: 20px; color: currentColor; flex-shrink: 0; }
+  button.save-btn:hover:not(:disabled){
+    box-shadow: 0 8px 26px rgba(201, 166, 107, 0.6);
+    transform: translateY(-1px);
+  }
+  button.save-btn:active:not(:disabled){ transform: scale(0.98); }
+  button.save-btn:disabled{
+    background: var(--bg-soft-2); color: var(--ink-dim);
+    box-shadow: none; cursor: default;
+  }
+  button.save-btn:disabled svg{ color: var(--ink-dim); }
   .transport-controls{
     display:flex; justify-content:center; align-items:center;
     gap: 30px; margin: 30px 0 34px;
@@ -268,6 +289,9 @@
     color: var(--ink-dim); margin-bottom: 6px;
   }
   input[type=range]{ width: 100%; accent-color: var(--gold); }
+  .slider-input-row{ display:flex; align-items:center; gap: 8px; }
+  .slider-input-row svg{ flex: 0 0 auto; color: var(--ink-dim); }
+  .slider-input-row input[type=range]{ flex: 1 1 auto; width: auto; }
 
   .tick-toggle-row{
     display:flex; align-items:center; justify-content:space-between;
@@ -345,7 +369,10 @@
   </div>
 
   <div class="controls">
-    <button class="main-btn" id="saveBtn" style="background:transparent;border:1px solid var(--line);color:var(--ink);">Save audio file</button>
+    <button class="main-btn save-btn" id="saveBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10.5m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span id="saveBtnLabel">Save audio file</span>
+    </button>
   </div>
   <p class="cycle-note" id="saveFormatNote" style="text-align:center;">Recording takes as long as the full sequence — keep this tab open. Saves as .mp3 (falls back to the recorded format if conversion isn't available).</p>
 
@@ -358,7 +385,10 @@
     </div>
     <div class="slider-row">
       <label><span>Voice volume</span><span id="volVal">25%</span></label>
-      <input type="range" id="volSlider" min="0" max="100" value="25">
+      <div class="slider-input-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <input type="range" id="volSlider" min="0" max="100" value="25">
+      </div>
     </div>
 
     <div class="tick-toggle-row">
@@ -377,7 +407,10 @@
     </div>
     <div class="slider-row">
       <label><span>Ting volume</span><span id="tingVolVal">50%</span></label>
-      <input type="range" id="tingVolSlider" min="0" max="100" value="50">
+      <div class="slider-input-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <input type="range" id="tingVolSlider" min="0" max="100" value="50">
+      </div>
     </div>
 
     <div class="tick-toggle-row">
@@ -396,7 +429,10 @@
     </div>
     <div class="slider-row">
       <label><span>Tick volume</span><span id="tickVolVal">75%</span></label>
-      <input type="range" id="tickVolSlider" min="0" max="100" value="75">
+      <div class="slider-input-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <input type="range" id="tickVolSlider" min="0" max="100" value="75">
+      </div>
     </div>
 
     <div class="tick-toggle-row">
@@ -415,7 +451,10 @@
     </div>
     <div class="slider-row">
       <label><span>Background volume</span><span id="ambienceVolVal">25%</span></label>
-      <input type="range" id="ambienceVolSlider" min="0" max="100" value="25">
+      <div class="slider-input-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <input type="range" id="ambienceVolSlider" min="0" max="100" value="25">
+      </div>
     </div>
   </div>
 
@@ -475,6 +514,7 @@
   const tingVolVal = document.getElementById('tingVolVal');
   const volVal = document.getElementById('volVal');
   const saveBtn = document.getElementById('saveBtn');
+  const saveBtnLabel = document.getElementById('saveBtnLabel');
 
   let running = false;
   let paused = false;
@@ -753,12 +793,18 @@
     return bytes.buffer;
   }
 
-  function ensureAudioGraph(){
+  async function ensureAudioGraph(){
     if (audioCtx) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
       return;
     }
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // A freshly constructed context can still report "suspended" for a beat
+    // even inside a user-gesture handler (varies by browser/version). Ting,
+    // tick, and voice for the very first phase get scheduled moments after
+    // this function returns, so make sure playback is actually running
+    // first -- otherwise that first phase's audio silently never fires.
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
     noiseBuffer = buildNoiseBuffer();
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 1;
@@ -818,8 +864,14 @@
     // by a play() call happening directly within a user gesture -- otherwise
     // later programmatic play() calls (e.g. Hold/Exhale, triggered after a
     // setTimeout) get silently blocked even though the first one worked.
-    // Priming all three here (muted, instantly paused) unlocks them all at once.
-    Object.keys(voiceAudio).forEach(p => {
+    // Priming all three here (muted, instantly paused) unlocks them all at
+    // once -- and this is now awaited before the function returns. Without
+    // that await, the very first real speak() call (for the opening phase)
+    // could fire while a clip's priming play() was still in flight; calling
+    // play() again while a previous play() promise is unresolved gets that
+    // first request silently interrupted, which is exactly why only the
+    // opening phase's voice cue went missing on a fresh start.
+    await Promise.all(Object.keys(voiceAudio).map(p => {
       const a = voiceAudio[p];
       const gainNode = voiceGainNodes[p];
       if (gainNode) gainNode.gain.value = 0; // silence via the audio graph, not a.muted --
@@ -828,11 +880,11 @@
       const finishPriming = () => { a.pause(); a.currentTime = 0; };
       const p2 = a.play();
       if (p2 && typeof p2.then === 'function'){
-        p2.then(finishPriming).catch(finishPriming);
-      } else {
-        finishPriming();
+        return p2.then(finishPriming).catch(finishPriming);
       }
-    });
+      finishPriming();
+      return Promise.resolve();
+    }));
   }
 
   // ---- Background ambience: a continuous loop, independent of the phase sequence ----
@@ -1229,7 +1281,7 @@
   }
 
   async function finishRecording(blob, mimeType){
-    saveBtn.textContent = 'Converting to MP3…';
+    saveBtnLabel.textContent = 'Converting to MP3…';
     const saveFormatNote = document.getElementById('saveFormatNote');
     const originalNote = saveFormatNote ? saveFormatNote.textContent : '';
     let decodeCtx = null;
@@ -1274,7 +1326,7 @@
       if (decodeCtx) decodeCtx.close().catch(() => {});
     }
     saveBtn.disabled = false;
-    saveBtn.textContent = 'Save audio file';
+    saveBtnLabel.textContent = 'Save audio file';
   }
 
   function finish(){
@@ -1292,7 +1344,7 @@
       mediaRecorder.stop(); // onstop -> finishRecording(), which owns saveBtn's state from here
     } else {
       saveBtn.disabled = false;
-      saveBtn.textContent = 'Save audio file';
+      saveBtnLabel.textContent = 'Save audio file';
     }
     isRecording = false;
     stoppedManually = false;
@@ -1306,14 +1358,14 @@
     document.body.classList.toggle('is-paused', running && paused);
   }
 
-  playPauseBtn.addEventListener('click', () => {
+  playPauseBtn.addEventListener('click', async () => {
     if (!running){
       const sequence = readSequence();
       if (sequence.length === 0) {
         phaseLabel.textContent = 'Add a phase first';
         return;
       }
-      ensureAudioGraph();
+      await ensureAudioGraph();
       const cycles = Math.max(1, parseInt(cyclesInput.value, 10) || 1);
       running = true;
       paused = false;
@@ -1343,14 +1395,14 @@
     updatePlayPauseIcon();
   });
 
-  saveBtn.addEventListener('click', () => {
+  saveBtn.addEventListener('click', async () => {
     if (running) return;
     const sequence = readSequence();
     if (sequence.length === 0) {
       phaseLabel.textContent = 'Add a phase first';
       return;
     }
-    ensureAudioGraph();
+    await ensureAudioGraph();
     const mimeType = pickRecordingMimeType();
     if (!mimeType){
       phaseLabel.textContent = "Can't record in this browser";
@@ -1370,7 +1422,7 @@
     playPauseBtn.disabled = true;
     stopBtn.disabled = false;
     saveBtn.disabled = true;
-    saveBtn.textContent = 'Recording…';
+    saveBtnLabel.textContent = 'Recording…';
     if (ambienceToggle.checked) startAmbience(ambienceStyleSelect.value);
     mediaRecorder.start();
     runSequence(sequence, cycles);
