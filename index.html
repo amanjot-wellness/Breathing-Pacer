@@ -315,6 +315,11 @@
     font-family: inherit;
   }
 
+  .sub-note{
+    font-size: 0.7rem; color: var(--ink-dim); opacity: 0.75;
+    margin-top: 4px; line-height: 1.4;
+  }
+
   footer.note{
     text-align:center; font-size: 0.72rem; color: var(--ink-dim);
     margin-top: 22px; line-height:1.5;
@@ -417,6 +422,11 @@
       <label for="tickToggle">Tick each second</label>
       <input type="checkbox" id="tickToggle" checked>
     </div>
+    <div class="tick-toggle-row">
+      <label for="countdownVoiceToggle">Speak the count (6, 5, 4…)</label>
+      <input type="checkbox" id="countdownVoiceToggle">
+    </div>
+    <p class="sub-note">Live playback only — spoken numbers can't be captured into the saved audio file, so they're skipped while recording.</p>
     <div class="tick-style-row">
       <label for="tickStyleSelect">Tick sound</label>
       <select id="tickStyleSelect">
@@ -504,6 +514,7 @@
   const ambienceVolSlider = document.getElementById('ambienceVolSlider');
   const ambienceVolVal = document.getElementById('ambienceVolVal');
   const tickToggle = document.getElementById('tickToggle');
+  const countdownVoiceToggle = document.getElementById('countdownVoiceToggle');
   const tickStyleSelect = document.getElementById('tickStyleSelect');
   const tickVolSlider = document.getElementById('tickVolSlider');
   const tickVolVal = document.getElementById('tickVolVal');
@@ -714,6 +725,24 @@
       case 'wood':
       default: playWoodTick(vol); break;
     }
+  }
+
+  // -- Spoken countdown ("6", "5", "4"...): uses the browser's built-in
+  // text-to-speech (Web Speech API) rather than pre-recorded clips, since
+  // recording a clip for every possible second count isn't practical. This
+  // is a live-only feature -- speechSynthesis output doesn't pass through
+  // the app's Web Audio graph, so it can't be captured into the recording
+  // when saving an audio file (unlike the tick sound, voice cues, and
+  // ambience, which all do). It's skipped automatically while recording.
+  function speakCountdownNumber(n){
+    if (!countdownVoiceToggle.checked) return;
+    if (isRecording) return;
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel(); // avoid overlapping with the previous number
+    const utter = new SpeechSynthesisUtterance(String(n));
+    utter.volume = Math.max(0, Math.min(1, parseInt(tickVolSlider.value, 10) / 100));
+    utter.rate = 1;
+    window.speechSynthesis.speak(utter);
   }
 
   // -- Ting sounds: played once when a phase (Inhale/Hold/Exhale) begins --
@@ -1232,6 +1261,7 @@
           if (!running) break;
           countdown.textContent = remaining;
           playClick();
+          speakCountdownNumber(remaining);
           await wait(1000);
         }
       }
@@ -1377,6 +1407,7 @@
     } else if (!paused){
       paused = true;
       Object.values(voiceAudio).forEach(a => a.pause());
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       fadeOutAndStopAmbience();
       updatePlayPauseIcon();
     } else {
@@ -1391,6 +1422,7 @@
     running = false;
     paused = false;
     Object.values(voiceAudio).forEach(a => { a.pause(); a.currentTime = 0; });
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     fadeOutAndStopAmbience();
     updatePlayPauseIcon();
   });
